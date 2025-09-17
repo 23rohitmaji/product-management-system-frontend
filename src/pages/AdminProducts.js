@@ -106,7 +106,7 @@ export default function AdminProducts() {
                         <Link
                           to={`/admin/products/${p.id}/edit`}
                           state={{ product: p }}
-                          className="me-2" // adds margin-end (right) if using Bootstrap
+                          className="me-2"
                         >
                           Edit
                         </Link>

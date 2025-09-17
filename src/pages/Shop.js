@@ -118,7 +118,6 @@ function Shop() {
         )}
       </div>
 
-      {/* Pagination */}
       <div className="d-flex justify-content-center mt-3">
         <button
           className="btn btn-secondary me-2"

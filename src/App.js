@@ -24,8 +24,6 @@ function App() {
       <Navbar user={user} setUser={setUser} />
       <div className="container py-4">
         <Routes>
-          {/* Public routes */}
-
           <Route path="/" element={<Shop />} />
           <Route
             path="/login"
@@ -52,7 +50,6 @@ function App() {
             element={user ? <Cart /> : <Navigate to="/login" replace />}
           />
 
-          {/* Admin routes - Protected */}
           <Route element={<ProtectedRoute user={user} requireAdmin />}>
             <Route path="/admin/products" element={<AdminProducts />} />
             <Route path="/admin/products/new" element={<AdminProductForm />} />
@@ -63,7 +60,6 @@ function App() {
             <Route path="/admin/categories" element={<AdminCategories />} />
           </Route>
 
-          {/* Fallback */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
