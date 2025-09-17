@@ -6,27 +6,32 @@ function Shop() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+
+  const fetchProducts = async (page = 1) => {
+    setLoading(true);
+    try {
+      const res = await api.get(`/products?page=${page}`);
+
+      if (res.data?.data?.data && Array.isArray(res.data.data.data)) {
+        setProducts(res.data.data.data);
+        setCurrentPage(res.data.data.current_page);
+        setLastPage(res.data.data.last_page);
+      } else {
+        setProducts([]);
+      }
+    } catch (err) {
+      console.error("Error fetching products:", err);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await api.get("/products");
-
-        if (res.data?.data?.data && Array.isArray(res.data.data.data)) {
-          setProducts(res.data.data.data);
-        } else {
-          setProducts([]);
-        }
-      } catch (err) {
-        console.error("Error fetching products:", err);
-        setProducts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+    fetchProducts(currentPage);
+  }, [currentPage]);
 
   const addToCart = async (product) => {
     if (!user) {
@@ -36,11 +41,16 @@ function Shop() {
 
     setAdding(product.id);
     try {
-      await api.post("/cart", {
+      const response = await api.post("/cart", {
         product_id: product.id,
         quantity: 1,
       });
-      alert(`${product.name} added to cart!`);
+
+      if (response.data.status === "success") {
+        alert(response.data.message);
+      } else {
+        alert(response.data.message || "Failed to add to cart");
+      }
     } catch (err) {
       alert(err?.response?.data?.message || "Failed to add to cart");
     } finally {
@@ -82,6 +92,27 @@ function Shop() {
         ) : (
           <p>No products available.</p>
         )}
+      </div>
+
+      {/* Pagination */}
+      <div className="d-flex justify-content-center mt-3">
+        <button
+          className="btn btn-secondary me-2"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((p) => p - 1)}
+        >
+          Previous
+        </button>
+        <span className="align-self-center">
+          Page {currentPage} of {lastPage}
+        </span>
+        <button
+          className="btn btn-secondary ms-2"
+          disabled={currentPage === lastPage}
+          onClick={() => setCurrentPage((p) => p + 1)}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
