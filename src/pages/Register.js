@@ -15,7 +15,7 @@ export default function Register({ onRegister }) {
     try {
       const res = await api.post("/auth/register", { name, email, password });
 
-      if (res.data.token && res.data.user) {
+      if (res.data.data.token && res.data.data.user) {
         saveAuth({ token: res.data.token, user: res.data.user });
         onRegister?.();
         navigate("/");

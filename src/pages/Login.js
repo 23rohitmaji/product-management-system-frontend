@@ -13,7 +13,7 @@ export default function Login({ onLogin }) {
     setError("");
     try {
       const res = await api.post("/auth/login", { email, password });
-      const { token, user } = res.data;
+      const { token, user } = res.data.data;
       saveAuth({ token, user });
       onLogin?.();
       navigate("/");
