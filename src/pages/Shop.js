@@ -4,6 +4,7 @@ import api, { getUser } from "../api";
 function Shop() {
   const user = getUser();
   const [products, setProducts] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -13,7 +14,6 @@ function Shop() {
     setLoading(true);
     try {
       const res = await api.get(`/products?page=${page}`);
-
       if (res.data?.data?.data && Array.isArray(res.data.data.data)) {
         setProducts(res.data.data.data);
         setCurrentPage(res.data.data.current_page);
@@ -29,9 +29,25 @@ function Shop() {
     }
   };
 
+  const fetchCart = async () => {
+    if (!user) return;
+    try {
+      const res = await api.get("/cart");
+      setCartItems(res.data.data || []);
+    } catch (err) {
+      console.error("Error fetching cart:", err);
+      setCartItems([]);
+    }
+  };
+
   useEffect(() => {
     fetchProducts(currentPage);
+    fetchCart();
   }, [currentPage]);
+
+  const isInCart = (productId) => {
+    return cartItems.some((item) => item.product_id === productId);
+  };
 
   const addToCart = async (product) => {
     if (!user) {
@@ -48,6 +64,7 @@ function Shop() {
 
       if (response.data.status === "success") {
         alert(response.data.message);
+        setCartItems((prev) => [...prev, { product_id: product.id, quantity: 1 }]);
       } else {
         alert(response.data.message || "Failed to add to cart");
       }
@@ -70,19 +87,27 @@ function Shop() {
               <div className="card">
                 <div className="card-body">
                   <h5 className="card-title">{product.name}</h5>
-                  <p className="card-text">Price: ₹{Number(product.price).toLocaleString("en-IN", { maximumFractionDigits: 0 })}</p>
+                  <p className="card-text">
+                    Price: ₹
+                    {Number(product.price).toLocaleString("en-IN", {
+                      maximumFractionDigits: 0,
+                    })}
+                  </p>
                   {product.categories && product.categories.length > 0 && (
                     <p className="card-text">
-                      Categories:{" "}
-                      {product.categories.map((c) => c.name).join(", ")}
+                      Categories: {product.categories.map((c) => c.name).join(", ")}
                     </p>
                   )}
                   <button
                     className="btn btn-primary"
                     onClick={() => addToCart(product)}
-                    disabled={adding === product.id}
+                    disabled={adding === product.id || isInCart(product.id)}
                   >
-                    {adding === product.id ? "Adding..." : "Add to Cart"}
+                    {adding === product.id
+                      ? "Adding..."
+                      : isInCart(product.id)
+                      ? "Added to Cart"
+                      : "Add to Cart"}
                   </button>
                 </div>
               </div>
