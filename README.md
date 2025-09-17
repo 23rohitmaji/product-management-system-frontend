@@ -27,8 +27,8 @@ It provides a responsive and user-friendly interface for managing products.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/product-management-frontend.git
-   cd product-management-frontend
+   git clone https://github.com/23rohitmaji/product-management-system-frontend.git
+   cd product-management-system-frontend
    ```
 
 2. Install dependencies:
@@ -39,19 +39,19 @@ It provides a responsive and user-friendly interface for managing products.
 3. Backend API URL:
    ```
    Inside src folder-> api.js:
-   const API_BASE = "http://localhost:8000/api/v1";
+   const API_BASE = "http://127.0.0.1:8000/api/v1";
    
    Make sure to replace this port with your php laravel port
    ```
 
 4. Run the development server:
    ```bash
-   npm run dev
+   npm start
    ```
 
 5. Open in browser:
    ```
-   http://localhost:5173
+   http://localhost:3000
    
    Make sure to replace this with your react server port
 
