@@ -70,8 +70,7 @@ function Shop() {
               <div className="card">
                 <div className="card-body">
                   <h5 className="card-title">{product.name}</h5>
-                  <p className="card-text">Price: ₹{product.price}</p>
-                  <p className="card-text">Stock: {product.stock}</p>
+                  <p className="card-text">Price: ₹{Number(product.price).toLocaleString("en-IN", { maximumFractionDigits: 0 })}</p>
                   {product.categories && product.categories.length > 0 && (
                     <p className="card-text">
                       Categories:{" "}
